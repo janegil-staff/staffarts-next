@@ -107,13 +107,7 @@ export default function HomePage() {
           <p style={{ color: "var(--text-muted)" }}>{t("noArtworks")}</p>
         ) : (
           <>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
-                gap: "clamp(14px, 3vw, 22px)",
-              }}
-            >
+            <div className="artwork-grid">
               {items.map((a) => (
                 <ArtworkFeedCard key={a._id} artwork={a} />
               ))}

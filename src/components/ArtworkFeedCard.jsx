@@ -94,7 +94,7 @@ export default function ArtworkFeedCard({ artwork }) {
       <div
         style={{
           fontFamily: "var(--font-display)",
-          fontSize: 17,
+          fontSize: "clamp(13px, 3.5vw, 17px)",
           color: "var(--text)",
           lineHeight: 1.2,
           overflow: "hidden",
@@ -107,7 +107,7 @@ export default function ArtworkFeedCard({ artwork }) {
       {artist && (
         <div
           style={{
-            fontSize: 14,
+            fontSize: "clamp(11px, 3vw, 14px)",
             color: "var(--text-muted)",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -118,7 +118,14 @@ export default function ArtworkFeedCard({ artwork }) {
         </div>
       )}
       {artwork.price != null && (
-        <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", marginTop: 2 }}>
+        <div
+          style={{
+            fontSize: "clamp(12px, 3vw, 15px)",
+            fontWeight: 700,
+            color: "var(--text)",
+            marginTop: 2,
+          }}
+        >
           {Number(artwork.price).toLocaleString()} {artwork.currency || "NOK"}
         </div>
       )}

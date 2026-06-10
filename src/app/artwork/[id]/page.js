@@ -109,11 +109,28 @@ export default function ArtworkDetailPage({ params }) {
           <h1 style={{ fontSize: "clamp(26px,4vw,38px)", margin: "8px 0 4px" }}>
             {art.title || "Untitled"}
           </h1>
-          {(art.artist?.displayName || art.createdBy?.displayName) && (
-            <p style={{ color: "var(--text-muted)", margin: "0 0 18px" }}>
-              {art.artist?.displayName || art.createdBy?.displayName}
-            </p>
-          )}
+          {(art.artist?.displayName || art.createdBy?.displayName) &&
+            (() => {
+              const artistId =
+                art.artist?._id ||
+                (typeof art.artist === "string" ? art.artist : null) ||
+                art.createdBy?._id;
+              const artistName =
+                art.artist?.displayName || art.createdBy?.displayName;
+              const style = { color: "var(--text-muted)", margin: "0 0 18px" };
+              return artistId ? (
+                <p style={style}>
+                  <Link
+                    href={`/users/${artistId}`}
+                    style={{ color: "var(--accent)" }}
+                  >
+                    {artistName}
+                  </Link>
+                </p>
+              ) : (
+                <p style={style}>{artistName}</p>
+              );
+            })()}
 
           {art.price != null ? (
             <p style={{ fontSize: 20, color: "var(--navy)", margin: "0 0 20px" }}>
