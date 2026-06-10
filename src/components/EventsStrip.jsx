@@ -39,7 +39,7 @@ export default function EventsStrip() {
       <div>
         {events.map((ev, i) => {
           const img =
-            ev.imageUrl || ev.image || ev.images?.[0]?.url || ev.images?.[0];
+            ev.coverImage || ev.imageUrl || ev.image || ev.images?.[0]?.url || ev.images?.[0];
           const meta = [
             t("eventTag"),
             formatDate(ev.startDate || ev.date, lang),
@@ -49,7 +49,7 @@ export default function EventsStrip() {
           return (
             <Link
               key={ev._id}
-              href="/events"
+              href={`/events/${ev._id}`}
               style={{
                 display: "flex",
                 alignItems: "center",

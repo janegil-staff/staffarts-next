@@ -2,6 +2,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useT } from "../i18n/index";
@@ -242,9 +243,32 @@ export default function ProfileView({ user, editable = false, onUserUpdate }) {
       )}
 
       {/* Works */}
-      <h2 style={{ fontSize: 18, marginTop: 12, marginBottom: 16 }}>
-        {t("myWorks")}
-      </h2>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: 12,
+          marginBottom: 16,
+        }}
+      >
+        <h2 style={{ fontSize: 18, margin: 0 }}>{t("myWorks")}</h2>
+        {editable && (
+          <Link
+            href="/artwork/new"
+            style={{
+              background: "var(--accent)",
+              color: "#fff",
+              padding: "8px 16px",
+              borderRadius: 20,
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            + {t("addArtwork")}
+          </Link>
+        )}
+      </div>
       {isLoading ? (
         <p style={{ color: "var(--text-muted)" }}>{t("loading")}</p>
       ) : works.length === 0 ? (

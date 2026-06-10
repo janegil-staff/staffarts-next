@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
 import { useT } from "../../i18n/index";
@@ -71,10 +72,11 @@ export default function EventsPage() {
         <div style={{ display: "grid", gap: 16 }}>
           {events.map((ev) => {
             const img =
-              ev.imageUrl || ev.image || ev.images?.[0]?.url || ev.images?.[0];
+              ev.coverImage || ev.imageUrl || ev.image || ev.images?.[0]?.url || ev.images?.[0];
             return (
-              <article
+              <Link
                 key={ev._id}
+                href={`/events/${ev._id}`}
                 style={{
                   display: "flex",
                   gap: 16,
@@ -132,7 +134,7 @@ export default function EventsPage() {
                     </p>
                   )}
                 </div>
-              </article>
+              </Link>
             );
           })}
         </div>

@@ -41,7 +41,7 @@ export default function GalleryPage() {
   return (
     <div
       style={{
-        maxWidth: 560,
+        maxWidth: 720,
         margin: "0 auto",
         padding: "clamp(16px, 4vw, 28px) clamp(14px, 4vw, 20px) 60px",
       }}

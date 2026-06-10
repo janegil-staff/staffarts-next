@@ -3,7 +3,6 @@ import { create } from "zustand";
 
 import client, { tokenStorage, onLogout } from "../api/client";
 import { login as apiLogin, register as apiRegister, fetchMe, logout as apiLogout } from "../api/auth";
-import { connectSocket, disconnectSocket } from "../lib/socket";
 
 export const useAuthStore = create((set, get) => ({
   user: null,
@@ -21,7 +20,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       const user = await fetchMe();
       set({ status: "authed", user });
-      connectSocket();
+      import("../lib/socket").then((m) => m.connectSocket());
     } catch {
       await tokenStorage.clearTokens();
       set({ status: "guest", user: null });
@@ -33,7 +32,7 @@ export const useAuthStore = create((set, get) => ({
     const { user, accessToken, refreshToken } = await apiLogin({ email, pin });
     await tokenStorage.setTokens(accessToken, refreshToken);
     set({ status: "authed", user });
-    connectSocket();
+    import("../lib/socket").then((m) => m.connectSocket());
     return user;
   },
 
@@ -42,14 +41,14 @@ export const useAuthStore = create((set, get) => ({
     const { user, accessToken, refreshToken } = await apiRegister(payload);
     await tokenStorage.setTokens(accessToken, refreshToken);
     set({ status: "authed", user });
-    connectSocket();
+    import("../lib/socket").then((m) => m.connectSocket());
     return user;
   },
 
   async logout() {
     await apiLogout();
     await tokenStorage.clearTokens();
-    disconnectSocket();
+    import("../lib/socket").then((m) => m.disconnectSocket());
     set({ status: "guest", user: null });
   },
 
@@ -60,6 +59,6 @@ export const useAuthStore = create((set, get) => ({
 
 // When the axios interceptor gives up on refresh, force the store to guest.
 onLogout(() => {
-  disconnectSocket();
+  import("../lib/socket").then((m) => m.disconnectSocket());
   useAuthStore.setState({ status: "guest", user: null });
 });

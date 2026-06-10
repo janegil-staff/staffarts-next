@@ -4,8 +4,6 @@
 import { useState, useEffect } from "react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
-import { configureSocket } from "./socket";
-
 export default function QueryProvider({ children }) {
   const [client] = useState(
     () =>
@@ -20,10 +18,18 @@ export default function QueryProvider({ children }) {
       }),
   );
 
-  // Give the socket service a handle to the query client so incoming messages
-  // can invalidate the unread + conversation queries (server is source of truth).
+  // Wire the socket to the query client so incoming messages can invalidate the
+  // unread + conversation queries. Imported lazily (browser only) so that
+  // socket.io-client never enters the server/SSR bundle — importing it there
+  // triggers "require is not defined".
   useEffect(() => {
-    configureSocket({ queryClient: client });
+    let cancelled = false;
+    import("./socket").then(({ configureSocket }) => {
+      if (!cancelled) configureSocket({ queryClient: client });
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [client]);
 
   return (

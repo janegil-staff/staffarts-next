@@ -1,13 +1,13 @@
 // src/app/artwork/[id]/page.js
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useT } from "../../../i18n/index";
-import { fetchArtwork } from "../../../api/artwork";
+import { fetchArtwork, deleteArtwork } from "../../../api/artwork";
 import { findConversationWith } from "../../../api/messages";
 import { useAuthStore } from "../../../store/authStore";
 
@@ -15,11 +15,23 @@ export default function ArtworkDetailPage({ params }) {
   const { id } = use(params);
   const { t } = useT();
   const router = useRouter();
+  const qc = useQueryClient();
   const authed = useAuthStore((s) => s.status === "authed");
+  const me = useAuthStore((s) => s.user);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const { data: art, isLoading, isError } = useQuery({
     queryKey: ["artwork", id],
     queryFn: () => fetchArtwork(id),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteArtwork(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["artworks"] });
+      qc.invalidateQueries({ queryKey: ["artworks", "by-artist"] });
+      router.push("/profile");
+    },
   });
 
   async function handleContact() {
@@ -65,10 +77,9 @@ export default function ArtworkDetailPage({ params }) {
 
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1.3fr) minmax(0, 1fr)",
-          gap: "clamp(20px, 4vw, 48px)",
-          alignItems: "start",
+          display: "flex",
+          flexDirection: "column",
+          gap: "clamp(20px, 4vw, 32px)",
         }}
         className="art-detail-grid"
       >
@@ -85,7 +96,11 @@ export default function ArtworkDetailPage({ params }) {
             <img
               src={img}
               alt={art.title || ""}
-              style={{ width: "100%", display: "block" }}
+              style={{
+                width: "100%",
+                height: "auto",
+                display: "block",
+              }}
             />
           ) : (
             <div style={{ aspectRatio: "4/5" }} />
@@ -142,20 +157,86 @@ export default function ArtworkDetailPage({ params }) {
             </p>
           )}
 
-          <button
-            onClick={handleContact}
-            style={{
-              background: "var(--accent)",
-              color: "#fff",
-              border: "none",
-              borderRadius: 10,
-              padding: "12px 22px",
-              fontSize: 15,
-              marginBottom: 28,
-            }}
-          >
-            {t("contactArtist")}
-          </button>
+          {(() => {
+            const artistId =
+              art.artist?._id ||
+              (typeof art.artist === "string" ? art.artist : null) ||
+              art.createdBy?._id ||
+              art.createdBy;
+            const myId = me?._id || me?.id;
+            const isMine = myId && artistId && String(myId) === String(artistId);
+
+            if (isMine) {
+              return confirmDelete ? (
+                <div style={{ marginBottom: 28 }}>
+                  <p style={{ fontSize: 14, color: "var(--text)", marginTop: 0 }}>
+                    {t("deleteConfirm")}
+                  </p>
+                  <div style={{ display: "flex", gap: 10 }}>
+                    <button
+                      onClick={() => deleteMutation.mutate()}
+                      disabled={deleteMutation.isPending}
+                      style={{
+                        background: "#C0392B",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 10,
+                        padding: "11px 20px",
+                        fontSize: 15,
+                      }}
+                    >
+                      {deleteMutation.isPending ? t("loading") : t("deleteArtwork")}
+                    </button>
+                    <button
+                      onClick={() => setConfirmDelete(false)}
+                      style={{
+                        background: "transparent",
+                        border: "1px solid var(--card-border)",
+                        borderRadius: 10,
+                        padding: "11px 20px",
+                        fontSize: 15,
+                        color: "var(--text)",
+                      }}
+                    >
+                      {t("cancel")}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  style={{
+                    background: "transparent",
+                    color: "#C0392B",
+                    border: "1px solid #C0392B",
+                    borderRadius: 10,
+                    padding: "12px 22px",
+                    fontSize: 15,
+                    marginBottom: 28,
+                  }}
+                >
+                  {t("deleteArtwork")}
+                </button>
+              );
+            }
+
+            return (
+              <button
+                onClick={handleContact}
+                style={{
+                  background: "var(--accent)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "12px 22px",
+                  fontSize: 15,
+                  marginBottom: 28,
+                }}
+              >
+                {t("contactArtist")}
+              </button>
+            );
+          })()}
 
           {art.description && (
             <section style={{ marginBottom: 20 }}>
@@ -176,7 +257,7 @@ export default function ArtworkDetailPage({ params }) {
 
       <style>{`
         @media (max-width: 720px) {
-          .art-detail-grid { grid-template-columns: 1fr !important; }
+          .art-detail-grid { gap: 16px !important; }
         }
       `}</style>
     </div>
