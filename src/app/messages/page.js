@@ -12,6 +12,7 @@ import {
 
 import { useT } from "../../i18n/index";
 import { useAuthStore } from "../../store/authStore";
+import MessageArtworkPreview from "../../components/MessageArtworkPreview";
 import {
   listConversations,
   listThreadPaged,
@@ -167,6 +168,7 @@ function MessagesPage() {
             t={t}
             lang={lang}
             qc={qc}
+            pendingArtworkRef={artworkRef}
           />
         ) : composeTo ? (
           <Compose
@@ -197,7 +199,7 @@ function MessagesPage() {
   );
 }
 
-function Thread({ conversationId, meId, t, lang, qc }) {
+function Thread({ conversationId, meId, t, lang, qc, pendingArtworkRef }) {
   const bottomRef = useRef(null);
 
   const { data, isLoading } = useInfiniteQuery({
@@ -257,6 +259,12 @@ function Thread({ conversationId, meId, t, lang, qc }) {
                     border: mine ? "none" : "1px solid var(--card-border)",
                   }}
                 >
+                  {(m.artworkRef || m.artwork) && (
+                    <MessageArtworkPreview
+                      artworkRef={m.artworkRef || m.artwork}
+                      mine={mine}
+                    />
+                  )}
                   {m.body}
                 </div>
               </div>
@@ -270,18 +278,24 @@ function Thread({ conversationId, meId, t, lang, qc }) {
         toUserId={otherId}
         t={t}
         qc={qc}
+        pendingArtworkRef={pendingArtworkRef}
       />
     </>
   );
 }
 
-function Composer({ conversationId, toUserId, t, qc }) {
+function Composer({ conversationId, toUserId, t, qc, pendingArtworkRef }) {
   const [text, setText] = useState("");
+  // Attach the artwork to the next message sent (when arriving from an artwork
+  // page into an existing thread), then clear so later messages are plain.
+  const [artworkRef, setArtworkRef] = useState(pendingArtworkRef || null);
 
   const mutation = useMutation({
-    mutationFn: (body) => sendMessage({ toUserId, body }),
+    mutationFn: (body) =>
+      sendMessage({ toUserId, body, artworkRef: artworkRef || undefined }),
     onSuccess: () => {
       setText("");
+      setArtworkRef(null);
       qc.invalidateQueries({ queryKey: ["thread", String(conversationId)] });
       qc.invalidateQueries({ queryKey: ["conversations"] });
     },

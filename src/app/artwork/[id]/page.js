@@ -35,9 +35,13 @@ export default function ArtworkDetailPage({ params }) {
     try {
       convId = await findConversationWith(artistId);
     } catch {}
+    // Always carry the artwork id so the first message in the thread can attach
+    // the artwork preview, whether the thread is new or already exists.
     const qs = new URLSearchParams({ to: String(artistId), artwork: String(id) });
     router.push(
-      convId ? `/messages?c=${convId}` : `/messages?${qs.toString()}`,
+      convId
+        ? `/messages?c=${convId}&artwork=${encodeURIComponent(String(id))}`
+        : `/messages?${qs.toString()}`,
     );
   }
 
