@@ -16,6 +16,8 @@
   "dark": "Tumma",
   "deleteArtwork": "Poista teos",
   "deleteConfirm": "Haluatko varmasti poistaa tämän teoksen? Tätä ei voi kumota.",
+  "deleteEvent": "Poista tapahtuma",
+  "deleteEventConfirm": "Haluatko varmasti poistaa tämän tapahtuman? Tätä ei voi kumota.",
   "dimensions": "Mitat",
   "displayName": "Näyttönimi",
   "editProfile": "Muokkaa profiilia",

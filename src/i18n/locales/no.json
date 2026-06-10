@@ -16,6 +16,8 @@
   "dark": "Mørk",
   "deleteArtwork": "Slett verk",
   "deleteConfirm": "Er du sikker på at du vil slette dette verket? Dette kan ikke angres.",
+  "deleteEvent": "Slett arrangement",
+  "deleteEventConfirm": "Er du sikker på at du vil slette dette arrangementet? Dette kan ikke angres.",
   "dimensions": "Mål",
   "displayName": "Visningsnavn",
   "editProfile": "Rediger profil",

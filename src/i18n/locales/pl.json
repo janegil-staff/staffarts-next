@@ -16,6 +16,8 @@
   "dark": "Ciemny",
   "deleteArtwork": "Usuń pracę",
   "deleteConfirm": "Czy na pewno chcesz usunąć tę pracę? Tej operacji nie można cofnąć.",
+  "deleteEvent": "Usuń wydarzenie",
+  "deleteEventConfirm": "Czy na pewno chcesz usunąć to wydarzenie? Tej operacji nie można cofnąć.",
   "dimensions": "Wymiary",
   "displayName": "Nazwa wyświetlana",
   "editProfile": "Edytuj profil",

@@ -1,12 +1,14 @@
 // src/app/events/[id]/page.js
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useT } from "../../../i18n/index";
-import { fetchEvent } from "../../../api/event";
+import { fetchEvent, deleteEvent } from "../../../api/event";
+import { useAuthStore } from "../../../store/authStore";
 
 function formatDateTime(d, lang) {
   if (!d) return "";
@@ -46,6 +48,19 @@ export default function EventDetailPage({ params }) {
     queryKey: ["event", id],
     queryFn: () => fetchEvent(id),
     enabled: !!id,
+  });
+
+  const router = useRouter();
+  const qc = useQueryClient();
+  const me = useAuthStore((s) => s.user);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteEvent(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["events"] });
+      router.push("/events");
+    },
   });
 
   if (isLoading)
@@ -121,9 +136,36 @@ export default function EventDetailPage({ params }) {
           }
         />
         <Detail label={t("eventsSubtitle")} value={ev.location} />
-        {ev.createdBy?.displayName && (
-          <Detail label={t("navProfile")} value={ev.createdBy.displayName} />
-        )}
+        {ev.createdBy?.displayName &&
+          (() => {
+            const creatorId = ev.createdBy?._id || ev.createdBy?.id;
+            const name = ev.createdBy.displayName;
+            return (
+              <div style={{ display: "flex", gap: 12, fontSize: 15 }}>
+                <dt
+                  style={{
+                    color: "var(--text-muted)",
+                    minWidth: 110,
+                    fontSize: 13,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.04em",
+                    paddingTop: 1,
+                  }}
+                >
+                  {t("navProfile")}
+                </dt>
+                <dd style={{ margin: 0 }}>
+                  {creatorId ? (
+                    <Link href={`/users/${creatorId}`} style={{ color: "var(--accent)" }}>
+                      {name}
+                    </Link>
+                  ) : (
+                    <span style={{ color: "var(--text)" }}>{name}</span>
+                  )}
+                </dd>
+              </div>
+            );
+          })()}
       </dl>
 
       {ev.description && (
@@ -152,6 +194,66 @@ export default function EventDetailPage({ params }) {
           {t("viewEvent")}
         </a>
       )}
+
+      {/* Owner-only delete */}
+      {(() => {
+        const creatorId = ev.createdBy?._id || ev.createdBy?.id || ev.createdBy;
+        const myId = me?._id || me?.id;
+        const isMine = myId && creatorId && String(myId) === String(creatorId);
+        if (!isMine) return null;
+        return confirmDelete ? (
+          <div style={{ marginTop: 28 }}>
+            <p style={{ fontSize: 14, color: "var(--text)", marginTop: 0 }}>
+              {t("deleteEventConfirm")}
+            </p>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button
+                onClick={() => deleteMutation.mutate()}
+                disabled={deleteMutation.isPending}
+                style={{
+                  background: "#C0392B",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "11px 20px",
+                  fontSize: 15,
+                }}
+              >
+                {deleteMutation.isPending ? t("loading") : t("deleteEvent")}
+              </button>
+              <button
+                onClick={() => setConfirmDelete(false)}
+                style={{
+                  background: "transparent",
+                  border: "1px solid var(--card-border)",
+                  borderRadius: 10,
+                  padding: "11px 20px",
+                  fontSize: 15,
+                  color: "var(--text)",
+                }}
+              >
+                {t("cancel")}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirmDelete(true)}
+            style={{
+              marginTop: 28,
+              display: "block",
+              background: "transparent",
+              color: "#C0392B",
+              border: "1px solid #C0392B",
+              borderRadius: 10,
+              padding: "11px 20px",
+              fontSize: 15,
+            }}
+          >
+            {t("deleteEvent")}
+          </button>
+        );
+      })()}
     </div>
   );
 }

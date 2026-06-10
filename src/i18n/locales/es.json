@@ -16,6 +16,8 @@
   "dark": "Oscuro",
   "deleteArtwork": "Eliminar obra",
   "deleteConfirm": "¿Seguro que quieres eliminar esta obra? No se puede deshacer.",
+  "deleteEvent": "Eliminar evento",
+  "deleteEventConfirm": "¿Seguro que quieres eliminar este evento? No se puede deshacer.",
   "dimensions": "Dimensiones",
   "displayName": "Nombre visible",
   "editProfile": "Editar perfil",

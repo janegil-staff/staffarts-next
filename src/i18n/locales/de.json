@@ -16,6 +16,8 @@
   "dark": "Dunkel",
   "deleteArtwork": "Werk löschen",
   "deleteConfirm": "Möchten Sie dieses Werk wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
+  "deleteEvent": "Veranstaltung löschen",
+  "deleteEventConfirm": "Möchten Sie diese Veranstaltung wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
   "dimensions": "Maße",
   "displayName": "Anzeigename",
   "editProfile": "Profil bearbeiten",

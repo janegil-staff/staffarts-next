@@ -16,6 +16,8 @@
   "dark": "Scuro",
   "deleteArtwork": "Elimina opera",
   "deleteConfirm": "Vuoi davvero eliminare quest'opera? L'azione non può essere annullata.",
+  "deleteEvent": "Elimina evento",
+  "deleteEventConfirm": "Vuoi davvero eliminare questo evento? L'azione non può essere annullata.",
   "dimensions": "Dimensioni",
   "displayName": "Nome visualizzato",
   "editProfile": "Modifica profilo",

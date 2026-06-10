@@ -16,6 +16,8 @@
   "dark": "Dark",
   "deleteArtwork": "Delete artwork",
   "deleteConfirm": "Are you sure you want to delete this artwork? This cannot be undone.",
+  "deleteEvent": "Delete event",
+  "deleteEventConfirm": "Are you sure you want to delete this event? This cannot be undone.",
   "dimensions": "Dimensions",
   "displayName": "Display name",
   "editProfile": "Edit profile",

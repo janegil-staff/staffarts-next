@@ -16,6 +16,8 @@
   "dark": "Mörkt",
   "deleteArtwork": "Ta bort verk",
   "deleteConfirm": "Är du säker på att du vill ta bort detta verk? Detta kan inte ångras.",
+  "deleteEvent": "Ta bort evenemang",
+  "deleteEventConfirm": "Är du säker på att du vill ta bort detta evenemang? Detta kan inte ångras.",
   "dimensions": "Mått",
   "displayName": "Visningsnamn",
   "editProfile": "Redigera profil",

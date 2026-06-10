@@ -16,6 +16,8 @@
   "dark": "Mørk",
   "deleteArtwork": "Slet værk",
   "deleteConfirm": "Er du sikker på, at du vil slette dette værk? Dette kan ikke fortrydes.",
+  "deleteEvent": "Slet begivenhed",
+  "deleteEventConfirm": "Er du sikker på, at du vil slette denne begivenhed? Dette kan ikke fortrydes.",
   "dimensions": "Mål",
   "displayName": "Visningsnavn",
   "editProfile": "Rediger profil",
