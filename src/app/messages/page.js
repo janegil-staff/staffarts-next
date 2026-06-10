@@ -151,7 +151,15 @@ function MessagesPage() {
       </aside>
 
       {/* Thread */}
-      <section style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+      <section
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          minWidth: 0,
+          minHeight: 0,
+          overflow: "hidden",
+        }}
+      >
         {activeId ? (
           <Thread
             conversationId={activeId}
@@ -222,7 +230,7 @@ function Thread({ conversationId, meId, t, lang, qc }) {
 
   return (
     <>
-      <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px" }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "20px 24px" }}>
         {isLoading ? (
           <p style={{ color: "var(--text-muted)" }}>{t("loading")}</p>
         ) : (
