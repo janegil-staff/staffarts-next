@@ -1,65 +1,143 @@
-import Image from "next/image";
+// src/app/page.js
+// Home: greeting + a preview of upcoming events (max 2, in EventsStrip) and a
+// small grid of the newest artworks (max 6). Full lists live at /events and
+// /gallery.
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+
+import { useT } from "../i18n/index";
+import { listArtworksPaged } from "../api/artwork";
+import ArtworkFeedCard from "../components/ArtworkFeedCard";
+import EventsStrip, { SectionLabel } from "../components/EventsStrip";
+import { useAuthStore } from "../store/authStore";
+
+const HOME_ARTWORK_LIMIT = 6;
+
+function greetingKey() {
+  const h = new Date().getHours();
+  if (h < 12) return "goodMorning";
+  if (h < 18) return "goodAfternoon";
+  return "goodEvening";
+}
+
+export default function HomePage() {
+  const { t } = useT();
+  const user = useAuthStore((s) => s.user);
+  const [availableOnly, setAvailableOnly] = useState(false);
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["artworks-home", { availableOnly }],
+    queryFn: () =>
+      listArtworksPaged({
+        page: 1,
+        limit: HOME_ARTWORK_LIMIT,
+        available: availableOnly || undefined,
+        sort: "-createdAt",
+      }),
+  });
+
+  const items = (data?.data ?? []).slice(0, HOME_ARTWORK_LIMIT);
+  const firstName = (user?.displayName || "").split(" ")[0];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div
+      style={{
+        maxWidth: 720,
+        margin: "0 auto",
+        padding: "clamp(20px, 4vw, 36px) clamp(16px, 5vw, 28px) 60px",
+      }}
+    >
+      {/* Greeting */}
+      <header style={{ marginBottom: "clamp(28px, 5vw, 40px)" }}>
+        <div style={{ fontSize: 18, color: "var(--text-muted)" }}>
+          {t(greetingKey())},
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(34px, 8vw, 48px)",
+            color: "var(--text)",
+            lineHeight: 1.1,
+          }}
+        >
+          {firstName || t("appName")}
         </div>
-      </main>
+      </header>
+
+      {/* SHOWS & MUSIC — events preview (max 2, capped inside EventsStrip) */}
+      <EventsStrip />
+
+      {/* JUST ADDED — newest artworks (max 6) */}
+      <section>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            justifyContent: "space-between",
+            marginBottom: 14,
+          }}
+        >
+          <SectionLabel>{t("justAdded")}</SectionLabel>
+          <button
+            onClick={() => setAvailableOnly((v) => !v)}
+            style={{
+              padding: "5px 12px",
+              borderRadius: 16,
+              fontSize: 13,
+              border: "1px solid var(--card-border)",
+              background: availableOnly ? "var(--accent)" : "transparent",
+              color: availableOnly ? "#fff" : "var(--text-muted)",
+            }}
+          >
+            {availableOnly ? t("filterAvailable") : t("filterAll")}
+          </button>
+        </div>
+
+        {isLoading ? (
+          <p style={{ color: "var(--text-muted)" }}>{t("loading")}</p>
+        ) : isError ? (
+          <div>
+            <p style={{ color: "var(--text-muted)" }}>{t("error")}</p>
+            <button onClick={() => refetch()}>{t("retry")}</button>
+          </div>
+        ) : items.length === 0 ? (
+          <p style={{ color: "var(--text-muted)" }}>{t("noArtworks")}</p>
+        ) : (
+          <>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
+                gap: "clamp(14px, 3vw, 22px)",
+              }}
+            >
+              {items.map((a) => (
+                <ArtworkFeedCard key={a._id} artwork={a} />
+              ))}
+            </div>
+
+            {/* Link through to the full feed instead of paginating on home */}
+            <div style={{ textAlign: "center", marginTop: 28 }}>
+              <Link
+                href="/gallery"
+                style={{
+                  display: "inline-block",
+                  padding: "11px 26px",
+                  borderRadius: 10,
+                  border: "1px solid var(--card-border)",
+                  color: "var(--text)",
+                  fontSize: 14,
+                }}
+              >
+                {t("navExplore")} ›
+              </Link>
+            </div>
+          </>
+        )}
+      </section>
     </div>
   );
 }
