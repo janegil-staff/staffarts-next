@@ -236,7 +236,7 @@ export default function ProfileView({ user, editable = false, onUserUpdate }) {
         </div>
       ) : (
         user?.bio && (
-          <p style={{ color: "var(--text)", lineHeight: 1.6, marginBottom: 28 }}>
+          <p style={{ color: "var(--text)", lineHeight: 1.6, marginBottom: 28, whiteSpace: "pre-wrap" }}>
             {user.bio}
           </p>
         )

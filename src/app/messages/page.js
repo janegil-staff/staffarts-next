@@ -257,6 +257,7 @@ function Thread({ conversationId, meId, t, lang, qc, pendingArtworkRef }) {
                     background: mine ? "var(--accent)" : "var(--card)",
                     color: mine ? "#fff" : "var(--text)",
                     border: mine ? "none" : "1px solid var(--card-border)",
+                    whiteSpace: "pre-wrap",
                   }}
                 >
                   {(m.artworkRef || m.artwork) && (

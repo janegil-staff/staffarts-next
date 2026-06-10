@@ -241,7 +241,14 @@ export default function ArtworkDetailPage({ params }) {
           {art.description && (
             <section style={{ marginBottom: 20 }}>
               <h2 style={{ fontSize: 15, marginBottom: 8 }}>{t("aboutWork")}</h2>
-              <p style={{ lineHeight: 1.6, color: "var(--text)", margin: 0 }}>
+              <p
+                style={{
+                  lineHeight: 1.6,
+                  color: "var(--text)",
+                  margin: 0,
+                  whiteSpace: "pre-wrap",
+                }}
+              >
                 {art.description}
               </p>
             </section>
