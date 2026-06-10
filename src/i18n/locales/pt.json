@@ -1,6 +1,7 @@
 {
   "aboutWork": "Sobre esta obra",
   "addArtwork": "Adicionar obra",
+  "addEvent": "Adicionar evento",
   "addImage": "Adicionar imagem",
   "appName": "Staff Arts",
   "artworkTitle": "Título",
@@ -27,6 +28,7 @@
   "filterAvailable": "Disponível",
   "forSale": "À venda",
   "forgotPin": "Esqueceu o PIN?",
+  "freeEvent": "Evento gratuito",
   "gallerySubtitle": "Obras originais, técnica mista",
   "galleryTitle": "Galeria",
   "goodAfternoon": "Boa tarde",

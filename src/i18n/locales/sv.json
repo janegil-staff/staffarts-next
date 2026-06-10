@@ -1,6 +1,7 @@
 {
   "aboutWork": "Om detta verk",
   "addArtwork": "Lägg till verk",
+  "addEvent": "Lägg till evenemang",
   "addImage": "Lägg till bild",
   "appName": "Staff Arts",
   "artworkTitle": "Titel",
@@ -27,6 +28,7 @@
   "filterAvailable": "Tillgänglig",
   "forSale": "Till salu",
   "forgotPin": "Glömt PIN?",
+  "freeEvent": "Gratis evenemang",
   "gallerySubtitle": "Originalverk, blandteknik",
   "galleryTitle": "Galleri",
   "goodAfternoon": "God eftermiddag",

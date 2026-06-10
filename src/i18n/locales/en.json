@@ -1,6 +1,7 @@
 {
   "aboutWork": "About this work",
   "addArtwork": "Add artwork",
+  "addEvent": "Add event",
   "addImage": "Add image",
   "appName": "Staff Arts",
   "artworkTitle": "Title",
@@ -27,6 +28,7 @@
   "filterAvailable": "Available",
   "forSale": "For sale",
   "forgotPin": "Forgot PIN?",
+  "freeEvent": "Free event",
   "gallerySubtitle": "Original works, mixed media",
   "galleryTitle": "Gallery",
   "goodAfternoon": "Good afternoon",

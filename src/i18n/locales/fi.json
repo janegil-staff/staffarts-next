@@ -1,6 +1,7 @@
 {
   "aboutWork": "Tietoa teoksesta",
   "addArtwork": "Lisää teos",
+  "addEvent": "Lisää tapahtuma",
   "addImage": "Lisää kuva",
   "appName": "Staff Arts",
   "artworkTitle": "Otsikko",
@@ -27,6 +28,7 @@
   "filterAvailable": "Saatavilla",
   "forSale": "Myytävänä",
   "forgotPin": "Unohtuiko PIN?",
+  "freeEvent": "Ilmainen tapahtuma",
   "gallerySubtitle": "Alkuperäisteoksia, sekatekniikka",
   "galleryTitle": "Galleria",
   "goodAfternoon": "Hyvää iltapäivää",

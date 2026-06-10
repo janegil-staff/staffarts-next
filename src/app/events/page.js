@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useT } from "../../i18n/index";
 import { listEventsPaged } from "../../api/event";
+import { useAuthStore } from "../../store/authStore";
 
 function formatDate(d, lang) {
   if (!d) return "";
@@ -23,6 +24,7 @@ function formatDate(d, lang) {
 
 export default function EventsPage() {
   const { t, lang } = useT();
+  const authed = useAuthStore((s) => s.status === "authed");
   const [upcoming, setUpcoming] = useState(true);
 
   const { data, isLoading, isError } = useQuery({
@@ -34,13 +36,40 @@ export default function EventsPage() {
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "clamp(24px,5vw,48px)" }}>
-      <header style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: "clamp(28px,5vw,44px)", margin: 0 }}>
-          {t("eventsTitle")}
-        </h1>
-        <p style={{ color: "var(--text-muted)", marginTop: 6, fontSize: 15 }}>
-          {t("eventsSubtitle")}
-        </p>
+      <header
+        style={{
+          marginBottom: 24,
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: 16,
+        }}
+      >
+        <div>
+          <h1 style={{ fontSize: "clamp(28px,5vw,44px)", margin: 0 }}>
+            {t("eventsTitle")}
+          </h1>
+          <p style={{ color: "var(--text-muted)", marginTop: 6, fontSize: 15 }}>
+            {t("eventsSubtitle")}
+          </p>
+        </div>
+        {authed && (
+          <Link
+            href="/events/new"
+            style={{
+              flexShrink: 0,
+              background: "var(--accent)",
+              color: "#fff",
+              padding: "9px 16px",
+              borderRadius: 20,
+              fontSize: 14,
+              fontWeight: 600,
+              whiteSpace: "nowrap",
+            }}
+          >
+            + {t("addEvent")}
+          </Link>
+        )}
       </header>
 
       <div style={{ display: "flex", gap: 8, marginBottom: 28 }}>

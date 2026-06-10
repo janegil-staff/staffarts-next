@@ -1,6 +1,7 @@
 {
   "aboutWork": "O tej pracy",
   "addArtwork": "Dodaj pracę",
+  "addEvent": "Dodaj wydarzenie",
   "addImage": "Dodaj zdjęcie",
   "appName": "Staff Arts",
   "artworkTitle": "Tytuł",
@@ -27,6 +28,7 @@
   "filterAvailable": "Dostępne",
   "forSale": "Na sprzedaż",
   "forgotPin": "Nie pamiętasz PIN-u?",
+  "freeEvent": "Darmowe wydarzenie",
   "gallerySubtitle": "Prace oryginalne, technika mieszana",
   "galleryTitle": "Galeria",
   "goodAfternoon": "Dzień dobry",
