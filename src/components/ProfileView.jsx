@@ -3,24 +3,49 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useT } from "../i18n/index";
 import { listArtworks } from "../api/artwork";
 import { updateProfile } from "../api/user";
+import { findConversationWith } from "../api/messages";
+import { useAuthStore } from "../store/authStore";
 import { uploadAvatar } from "../lib/uploadAvatar";
 import ArtworkFeedCard from "./ArtworkFeedCard";
 
 export default function ProfileView({ user, editable = false, onUserUpdate }) {
   const { t } = useT();
   const qc = useQueryClient();
+  const router = useRouter();
   const fileRef = useRef(null);
+  const authed = useAuthStore((s) => s.status === "authed");
 
   const [editing, setEditing] = useState(false);
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [bio, setBio] = useState(user?.bio || "");
   const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState(null);
+
+  // Message this user: reuse an existing thread if one exists, else open a
+  // fresh compose against them.
+  async function handleMessage() {
+    if (!authed) {
+      router.push("/login");
+      return;
+    }
+    const targetId = user?._id || user?.id;
+    if (!targetId) return;
+    let convId = null;
+    try {
+      convId = await findConversationWith(targetId);
+    } catch {}
+    router.push(
+      convId
+        ? `/messages?c=${convId}`
+        : `/messages?to=${encodeURIComponent(String(targetId))}`,
+    );
+  }
 
   const userId = user?._id || user?.id;
   const avatar = user?.profileImage || user?.avatar || user?.avatarUrl || null;
@@ -174,6 +199,23 @@ export default function ProfileView({ user, editable = false, onUserUpdate }) {
               }}
             >
               {t("editProfile")}
+            </button>
+          )}
+          {!editable && (
+            <button
+              onClick={handleMessage}
+              style={{
+                marginTop: 8,
+                padding: "8px 18px",
+                borderRadius: 20,
+                fontSize: 14,
+                fontWeight: 600,
+                border: "none",
+                background: "var(--accent)",
+                color: "#fff",
+              }}
+            >
+              {t("messageUser")}
             </button>
           )}
         </div>
